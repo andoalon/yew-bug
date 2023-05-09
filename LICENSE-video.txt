@@ -1,0 +1,4 @@
+video.mp4 is a clip from Big Buck Bunny
+Blender Foundation | www.blender.org
+(c) copyright 2008, Blender Foundation / www.bigbuckbunny.org
+See https://peach.blender.org/about/ for more detailed license information.
