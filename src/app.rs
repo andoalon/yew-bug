@@ -6,14 +6,13 @@ use yew::prelude::*;
 pub fn app() -> Html {
     html! {
         <main>
-            <VideoFunction />
-            //<VideoStruct />
+            <Video />
         </main>
     }
 }
 
-#[function_component(VideoFunction)]
-pub fn video_function() -> Html {
+#[function_component(Video)]
+pub fn video() -> Html {
     let number = use_state_eq(|| None::<i64>);
 
     let time_update = {
@@ -23,7 +22,7 @@ pub fn video_function() -> Html {
         })
     };
 
-    let numbers = {
+    let number_vec = {
         if let Some(num) = *number {
             vec![html! {
                 <button class="my-button">
@@ -35,89 +34,31 @@ pub fn video_function() -> Html {
         }
     };
 
-    let number_opt = number.map(|n| html! {
+    let number_opt = number.map(|num| html! {
         <button class="my-button">
-            {format!("Number: {n}")}
+            {format!("Number: {num}")}
         </button>
     });
 
     html! {
         <>
-            <video autoplay=true type={VIDEO_TYPE} src={VIDEO_URL}
+            <video muted=true controls=true type={VIDEO_TYPE} src={VIDEO_URL}
                 ontimeupdate={time_update}>
             </video>
 
-            //{ numbers } // Bug
-            //{ for number_opt } // Bug
+            // Case 1: Works
+            // if let Some(num) = *number {
+            //     <button class="my-button">
+            //         {format!("Number: {num}")}
+            //     </button>
+            // }
 
-            // Works
-            if let Some(num) = *number {
-                <button class="my-button">
-                    {format!("Number: {num}")}
-                </button>
-            }
+            { number_vec } // Case 2: Bug
+            //{ for number_vec } // Case 2.1: Bug
+
+            //{ number_opt } // Case 3: Bug
+            //{ for number_opt } // Case 3.1: Bug
         </>
-    }
-}
-
-#[derive(Default)]
-struct VideoStruct {
-    number: Option<i64>,
-}
-
-impl Component for VideoStruct {
-    type Message = Option<i64>;
-    type Properties = ();
-
-    fn create(_: &Context<Self>) -> Self {
-        VideoStruct::default()
-    }
-
-    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
-        if self.number == msg {
-            false
-        } else {
-            self.number = msg;
-            true
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let numbers = {
-            if let Some(num) = &self.number {
-                vec![html! {
-                    <button class="my-button">
-                        {format!("Number: {num}")}
-                    </button>
-                }]
-            } else {
-                Vec::new()
-            }
-        };
-
-        let number_opt = self.number.map(|n| html! {
-            <button class="my-button">
-                {format!("Number: {n}")}
-            </button>
-        });
-
-        html! {
-            <>
-                <video autoplay=true type={VIDEO_TYPE} src={VIDEO_URL}
-                    ontimeupdate={ctx.link().callback(number_from_video)}
-                ></video>
-
-                //{ numbers } // Bug
-                { for number_opt } // Bug
-
-                // Works
-                // if let Some(num) = &self.number {
-                //     <button class="my-button">
-                //         {format!("Number: {num}")}
-                //     </button>
-                // }
-            </>
-        }
     }
 }
 
